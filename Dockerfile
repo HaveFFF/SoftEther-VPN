@@ -1,8 +1,16 @@
 # l4d2server
 FROM ubuntu:16.04
 
-RUN git clone https://github.com/SoftEtherVPN/SoftEtherVPN.git
-RUN cd SoftEtherVPN
+RUN apt-get update && \
+    apt-get install -y openssh-server git
+	
+RUN echo "root:password"|chpasswd
+RUN sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+	sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config	
+
+
+RUN git clone https://github.com/SoftEtherVPN/SoftEtherVPN.git SoftEtherVPN
+WORKDIR SoftEtherVPN
 RUN ./configure
 RUN make
 RUN make install
