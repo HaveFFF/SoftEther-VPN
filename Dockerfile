@@ -2,7 +2,7 @@
 FROM ubuntu:16.04
 
 RUN apt-get update && \
-    apt-get install -y openssh-server git
+    apt-get install -y openssh-server git make
 	
 RUN echo "root:password"|chpasswd
 RUN sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
