@@ -2,18 +2,25 @@
 FROM ubuntu:16.04
 
 RUN apt-get update && \
-    apt-get install -y openssh-server git make gcc binutils gzip bzip2 unzip vim
+    apt-get install -y openssh-server git make gcc binutils gzip bzip2 unzip vim libreadline-dev libssl-dev
 	
 RUN echo "root:password"|chpasswd
 RUN sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
 	sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config	
 
+RUN wget http://jp.softether-download.com/files/softether/v4.22-9634-beta-2016.11.27-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-v4.22-9634-beta-2016.11.27-linux-x64-64bit.tar.gz
 
-RUN git clone https://github.com/SoftEtherVPN/SoftEtherVPN.git SoftEtherVPN
-WORKDIR SoftEtherVPN
-RUN ./configure
+RUN tar xzvf softether-vpnserver-v4.22-9634-beta-2016.11.27-linux-x64-64bit.tar.gz
+WORKDIR vpnserver
 RUN make
-RUN make install
+
+
+
+#RUN git clone https://github.com/SoftEtherVPN/SoftEtherVPN.git SoftEtherVPN
+#WORKDIR SoftEtherVPN
+#RUN ./configure
+#RUN make
+#RUN make install
 
 #RUN dpkg --add-architecture i386
 #RUN apt-get update
@@ -47,9 +54,8 @@ RUN make install
 
 #RUN echo y > su l4d2server -l -c "/home/l4d2server/l4d2server install"
 EXPOSE 22
-EXPOSE 27015
-EXPOSE 27005
-EXPOSE 26901
+EXPOSE 8888
+EXPOSE 1194
 
 CMD ["/usr/sbin/sshd", "-D"]
 
